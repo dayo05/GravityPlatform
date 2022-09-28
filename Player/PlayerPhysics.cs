@@ -16,6 +16,11 @@ namespace GravityPlatform.Player
 
         private bool taskGameOver = false;
         
+        private WallDetector lWall;
+        private WallDetector rWall;
+        private WallDetector celling;
+        private WallDetector floor;
+        
         public override void _PhysicsProcess(float delta)
         {
             if (taskGameOver)
@@ -42,25 +47,25 @@ namespace GravityPlatform.Player
                 if (CheckOnFloor())
                 {
                     lfloorTick = ptick.Tick;
-                    if (Input.IsActionPressed("right") && (t = true))
+                    if (right.IsPressed && (t = true))
                         LinearVelocity = new Vector2(MovingBias, LinearVelocity.y);
-                    if (Input.IsActionPressed("left") && (t = true))
+                    if (left.IsPressed && (t = true))
                         LinearVelocity = new Vector2(-MovingBias, LinearVelocity.y);
                     if (!t) LinearVelocity *= Vector2.Down;
                     
                     ResetDash();
-                    if (Input.IsActionJustPressed("jump") || ptick.Before(jumpTask, 20))
+                    if (jump.IsJustPressed || ptick.Before(jumpTask, 10))
                     {
                         ApplyJump();
                         lfloorTick = 0;
                         jumpTask = 0;
                     }
                 }
-                else if (ptick.Before(lfloorTick, 20) && Input.IsActionJustPressed("jump"))
+                else if (ptick.Before(lfloorTick, 10) && jump.IsJustPressed)
                     ApplyJump();
                 else if (CheckOnWall())
                 {
-                    if (Input.IsActionJustPressed("jump") || ptick.Before(jumpTask, 30))
+                    if (jump.IsJustPressed || ptick.Before(jumpTask, 15))
                     {
                         LinearVelocity = new Vector2(lWall.IsWallDetected ? MovingBias : -MovingBias, LinearVelocity.y);
                         ApplyJump();
@@ -68,7 +73,7 @@ namespace GravityPlatform.Player
                         wjumpTick = ptick.Tick;
                         jumpTask = 0;
                     }
-                    else if (Input.IsActionPressed("grab") && ptick.After(wjumpTick, 10))
+                    else if (grab.IsPressed && ptick.After(wjumpTick, 10))
                     {
                         ResetDash();
                         LinearVelocity = Vector2.Zero;
@@ -76,9 +81,9 @@ namespace GravityPlatform.Player
                     }
                     else ApplyGravity(delta);
                 }
-                else if (Input.IsActionJustPressed("dash") && Dash())
+                else if (dash.IsJustPressed && Dash())
                 { /* Dash! */ }
-                else if (Input.IsActionJustPressed("jump"))
+                else if (jump.IsJustPressed)
                 {
                     jumpTask = ptick.Tick;
                     ApplyGravity(delta);
@@ -92,7 +97,7 @@ namespace GravityPlatform.Player
             }
             else
             {
-                if (Input.IsActionJustPressed("dash"))
+                if (dash.IsJustPressed)
                     Dash();
                 MoveAndSlide(dashDirection.Normalized() * 8000 * delta * (2.5f + (0.6f - dashDeltaTime)), Vector2.Up);
             }
@@ -108,10 +113,10 @@ namespace GravityPlatform.Player
         {
             if (dashCount <= 0) return false;
             var vt = Vector2.Zero;
-            if (Input.IsActionPressed("up")) vt += Vector2.Up;
-            if (Input.IsActionPressed("right")) vt += Vector2.Right;
-            if (Input.IsActionPressed("left")) vt += Vector2.Left;
-            if (Input.IsActionPressed("down")) vt += Vector2.Down;
+            if (up.IsPressed) vt += Vector2.Up;
+            if (right.IsPressed) vt += Vector2.Right;
+            if (left.IsPressed) vt += Vector2.Left;
+            if (down.IsPressed) vt += Vector2.Down;
             if (vt != Vector2.Zero)
             {
                 dashCount--;

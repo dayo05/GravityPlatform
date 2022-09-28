@@ -1,10 +1,12 @@
 using Godot;
+using GravityPlatform.Util;
 
 namespace GravityPlatform.ui
 {
     public class HUD : Control
     {
         private PopupMenu pauseDialog;
+        private InputHandler escape = new InputHandler("escape");
         public override void _Ready()
         {
             GetNode<Button>("Pause").Connect("pressed", this, nameof(OnPause));
@@ -34,7 +36,7 @@ namespace GravityPlatform.ui
 
         public override void _Input(InputEvent evt)
         {
-            if (evt.IsActionPressed("escape"))
+            if (escape.ValidatePress(evt))
             {
                 if (GetTree().Paused) OnResume();
                 else OnPause();

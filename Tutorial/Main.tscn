@@ -212,10 +212,10 @@ text = "Flag is checkpoint!"
 [node name="RichTextLabel3" type="RichTextLabel" parent="."]
 margin_left = 1207.0
 margin_top = 247.0
-margin_right = 1322.0
+margin_right = 1423.0
 margin_bottom = 272.0
 rect_scale = Vector2( 2, 2 )
-text = "D key for dash!"
+text = "D key + Arrow key for dash!"
 
 [node name="FixedGravityArea" parent="." instance=ExtResource( 11 )]
 position = Vector2( 7699, 960 )
@@ -234,9 +234,11 @@ text = "Try this!!"
 margin_left = 3276.0
 margin_top = 1280.0
 margin_right = 3655.0
-margin_bottom = 1300.0
+margin_bottom = 1334.0
 rect_scale = Vector2( 2, 2 )
-text = "Oh, I've forget that you can use dash only once on air... :("
+text = "Oh, I've forget that you can use dash only once on air... :(
+
+Tip: F for grab!"
 
 [node name="RichTextLabel6" type="RichTextLabel" parent="."]
 margin_left = 5188.0
@@ -261,6 +263,14 @@ margin_right = 7368.0
 margin_bottom = 1292.0
 rect_scale = Vector2( 2, 2 )
 text = "You can add your dash with this item!"
+
+[node name="RichTextLabel9" type="RichTextLabel" parent="."]
+margin_left = 4331.0
+margin_top = 673.0
+margin_right = 4606.0
+margin_bottom = 708.0
+rect_scale = Vector2( 2, 2 )
+text = "Press jump key at wall perform wall jump"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

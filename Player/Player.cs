@@ -1,4 +1,5 @@
 using Godot;
+using GravityPlatform.Util;
 using GravityPlatform.Zone;
 
 namespace GravityPlatform.Player
@@ -11,12 +12,16 @@ namespace GravityPlatform.Player
         private Vector2 respawnPoint;
         private float respawnGravity = 1.0f;
 
-        private WallDetector lWall;
-        private WallDetector rWall;
-        private WallDetector celling;
-        private WallDetector floor;
-
         private int fixedGravityZoneStack = 0;
+
+        private InputHandler left = new InputHandler("left");
+        private InputHandler right = new InputHandler("right");
+        private InputHandler up = new InputHandler("up");
+        private InputHandler down = new InputHandler("down");
+        private InputHandler jump = new InputHandler("jump");
+        private InputHandler dash = new InputHandler("dash");
+        private InputHandler grab = new InputHandler("grab");
+        private InputHandler gravity_1 = new InputHandler("gravity_1");
         
         public override void _Ready()
         {
@@ -33,7 +38,7 @@ namespace GravityPlatform.Player
 
         public override void _Input(InputEvent evt)
         {
-            if (evt.IsActionPressed("gravity_1") && fixedGravityZoneStack == 0)
+            if (gravity_1.ValidatePress(evt) && fixedGravityZoneStack == 0)
                 GravityBias *= -1;
 
             base._Input(evt);
