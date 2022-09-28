@@ -11,7 +11,7 @@ namespace GravityPlatform.Zone
             base._Ready();
         }
 
-        protected abstract string Name { get; }
+        protected new abstract string Name { get; }
 
         private void OnEnterZone(Node2D node)
         {

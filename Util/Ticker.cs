@@ -3,10 +3,6 @@ namespace GravityPlatform.Util
     public class Ticker
     {
         public ulong Tick { get; private set; } = 0;
-        public Ticker()
-        {
-            
-        }
 
         public void NextTick()
             => Tick++;
