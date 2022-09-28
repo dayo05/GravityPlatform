@@ -31,5 +31,15 @@ namespace GravityPlatform.ui
             pauseDialog.Hide();
             GetTree().ChangeScene("Main/SelectLevel.tscn");
         }
+
+        public override void _Input(InputEvent evt)
+        {
+            if (evt.IsActionPressed("escape"))
+            {
+                if (GetTree().Paused) OnResume();
+                else OnPause();
+            }
+            base._Input(evt);
+        }
     }
 }

@@ -49,34 +49,42 @@ namespace GravityPlatform.Player
                     if (!t) LinearVelocity *= Vector2.Down;
                     
                     ResetDash();
-                    if (Input.IsActionJustPressed("jump") || ptick.Before(jumpTask, 5))
+                    if (Input.IsActionJustPressed("jump") || ptick.Before(jumpTask, 20))
                     {
                         ApplyJump();
                         lfloorTick = 0;
+                        jumpTask = 0;
                     }
                 }
-                else if (ptick.Before(lfloorTick, 5) && Input.IsActionJustPressed("jump"))
+                else if (ptick.Before(lfloorTick, 20) && Input.IsActionJustPressed("jump"))
                     ApplyJump();
                 else if (CheckOnWall())
                 {
-                    if (Input.IsActionJustPressed("jump") || ptick.Before(jumpTask, 5))
+                    if (Input.IsActionJustPressed("jump") || ptick.Before(jumpTask, 30))
                     {
                         LinearVelocity = new Vector2(lWall.IsWallDetected ? MovingBias : -MovingBias, LinearVelocity.y);
                         ApplyJump();
+                        ResetDash();
                         wjumpTick = ptick.Tick;
+                        jumpTask = 0;
                     }
-                    else if (Input.IsActionPressed("grab") && ptick.After(wjumpTick, 5))
+                    else if (Input.IsActionPressed("grab") && ptick.After(wjumpTick, 10))
                     {
                         ResetDash();
                         LinearVelocity = Vector2.Zero;
+                        wjumpTick = 0;
                     }
                     else ApplyGravity(delta);
                 }
-                else if (!(Input.IsActionJustPressed("dash") && Dash()))
-                    ApplyGravity(delta);
+                else if (Input.IsActionJustPressed("dash") && Dash())
+                { /* Dash! */ }
                 else if (Input.IsActionJustPressed("jump"))
+                {
                     jumpTask = ptick.Tick;
-                
+                    ApplyGravity(delta);
+                }
+                else ApplyGravity(delta);
+
                 LinearVelocity = MoveAndSlide(LinearVelocity, Vector2.Up);
 
                 if (LinearVelocity.x != 0 && dashDeltaTime != 0)
