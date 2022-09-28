@@ -1,7 +1,7 @@
 using Godot;
 using GravityPlatform.Util;
 
-namespace GravityPlatform.ui
+namespace GravityPlatform.UI
 {
     public class HUD : Control
     {
