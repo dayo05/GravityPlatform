@@ -6,9 +6,9 @@ namespace GravityPlatform.Player
     public partial class Player: KinematicBody2D
     {
         private Ticker ptick = new Ticker();
-        private ulong wjumpTick = 0;
-        private ulong lfloorTick = 0;
-        private ulong jumpTask = 0;
+        private ulong? wjumpTick = null;
+        private ulong? lfloorTick = null;
+        private ulong? jumpTask = null;
         
         private const int MovingBias = 300;
         private float dashDeltaTime = 10.0f;
@@ -31,6 +31,9 @@ namespace GravityPlatform.Player
                 GravityBias = respawnGravity;
                 dashDeltaTime = 10;
                 LinearVelocity = Vector2.Zero;
+                lfloorTick = null;
+                wjumpTick = null;
+                jumpTask = null;
                 
                 ptick.Reset();
                 return;
@@ -57,8 +60,8 @@ namespace GravityPlatform.Player
                     if (jump.IsJustPressed || ptick.Before(jumpTask, 10))
                     {
                         ApplyJump();
-                        lfloorTick = 0;
-                        jumpTask = 0;
+                        lfloorTick = null;
+                        jumpTask = null;
                     }
                 }
                 else if (ptick.Before(lfloorTick, 10) && jump.IsJustPressed)
@@ -71,13 +74,13 @@ namespace GravityPlatform.Player
                         ApplyJump();
                         ResetDash();
                         wjumpTick = ptick.Tick;
-                        jumpTask = 0;
+                        jumpTask = null;
                     }
                     else if (grab.IsPressed && ptick.After(wjumpTick, 10))
                     {
                         ResetDash();
                         LinearVelocity = Vector2.Zero;
-                        wjumpTick = 0;
+                        wjumpTick = null;
                     }
                     else ApplyGravity(delta);
                 }
