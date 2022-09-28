@@ -9,3 +9,5 @@ data_*/
 build/
 
 mono_crash*
+
+.idea/
