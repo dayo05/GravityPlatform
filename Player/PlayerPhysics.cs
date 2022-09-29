@@ -1,42 +1,33 @@
+using System.Diagnostics;
 using Godot;
 using GravityPlatform.Util;
 
 namespace GravityPlatform.Player
 {
-    public partial class Player: KinematicBody2D
+    public partial class Player
     {
         private Ticker ptick = new Ticker();
-        private ulong? wjumpTick = null;
-        private ulong? lfloorTick = null;
-        private ulong? jumpTask = null;
+        private ulong? wjumpTick;
+        private ulong? lfloorTick;
+        private ulong? jumpTask;
         
         private const int MovingBias = 300;
         private float dashDeltaTime = 10.0f;
         private Vector2 dashDirection;
 
-        private bool taskGameOver = false;
+        private bool taskGameOver;
         
         private WallDetector lWall;
         private WallDetector rWall;
         private WallDetector celling;
         private WallDetector floor;
-        
+
         public override void _PhysicsProcess(float delta)
         {
             if (taskGameOver)
             {
                 taskGameOver = false;
-                
-                Position = respawnPoint;
-                GravityBias = respawnGravity;
-                CancelDash();
-                LinearVelocity = Vector2.Zero;
-                lfloorTick.Disable();
-                wjumpTick.Disable();
-                jumpTask.Disable();
-                ResetDash();
-                
-                ptick.Reset();
+                GameOverPhysics();
                 return;
             }
             ptick.NextTick();
@@ -106,8 +97,7 @@ namespace GravityPlatform.Player
             else
             {
                 dashDeltaTime += delta;
-                if (dash.IsJustPressed)
-                    Dash();
+                if (dash.IsJustPressed && Dash()) { /* Dash! */ }
                 MoveAndSlide(dashDirection.Normalized() * 8000 * delta * (2.5f + (0.6f - dashDeltaTime)), Vector2.Up);
             }
             #endregion
@@ -128,26 +118,25 @@ namespace GravityPlatform.Player
             if (right.IsPressed) vt += Vector2.Right;
             if (left.IsPressed) vt += Vector2.Left;
             if (down.IsPressed) vt += Vector2.Down;
-            if (vt != Vector2.Zero)
-            {
-                dashCount--;
-                dashDeltaTime = 0;
-                LinearVelocity.y = 0;
+            if (vt == Vector2.Zero) return false;
+            
+            dashCount--;
+            dashDeltaTime = 0;
+            LinearVelocity.y = 0;
 
-                if (LinearVelocity.x != 0 && vt.x == 0)
-                    vt.x = (LinearVelocity.x > 0 ? 1 : -1) * 0.2f;
+            if (LinearVelocity.x != 0 && vt.x == 0)
+                vt.x = (LinearVelocity.x > 0 ? 1 : -1) * 0.2f;
                 
-                sprite.Rotation = vt.Angle();
-                dashDirection = vt.Normalized();
+            sprite.Rotation = vt.Angle();
+            dashDirection = vt.Normalized();
 
-                Animation = "dash";
-                if (dashDirection.x < 0)
-                    sprite.FlipV = true;
-                sprite.FlipH = false;
+            Animation = "dash";
+            if (dashDirection.x < 0)
+                sprite.FlipV = true;
+            sprite.FlipH = false;
 
-                if (dashDirection.x * LinearVelocity.x < 0) LinearVelocity.x *= -1;
-                if (LinearVelocity.x == 0 && dashDirection.x != 0) LinearVelocity.x = MovingBias * (dashDirection.x > 0 ? 1 : -1);
-            }
+            if (dashDirection.x * LinearVelocity.x < 0) LinearVelocity.x *= -1;
+            if (LinearVelocity.x == 0 && dashDirection.x != 0) LinearVelocity.x = MovingBias * (dashDirection.x > 0 ? 1 : -1);
 
             return true;
         }

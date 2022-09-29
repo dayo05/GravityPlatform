@@ -7,30 +7,34 @@ namespace GravityPlatform.UI
     {
         private PopupMenu pauseDialog;
         private InputHandler escape = new InputHandler("escape");
+        private Player.Player player;
         public override void _Ready()
         {
-            GetNode<Button>("Pause").Connect("pressed", this, nameof(OnPause));
+            GetNode<Button>("Pause").Connect("pressed", this, nameof(OnPauseClicked));
             pauseDialog = GetNode<PopupMenu>("PauseDialog");
-            GetNode<Button>("PauseDialog/Resume").Connect("pressed", this, nameof(OnResume));
-            GetNode<Button>("PauseDialog/Quit").Connect("pressed", this, nameof(OnQuit));
+            GetNode<Button>("PauseDialog/Resume").Connect("pressed", this, nameof(OnResumeClicked));
+            GetNode<Button>("PauseDialog/Quit").Connect("pressed", this, nameof(OnQuitClicked));
         }
 
-        private void OnPause()
+        [Signal]
+        delegate void SetPause(bool newState);
+
+        void SSetPause(bool newState)
         {
-            GetTree().Paused = true;
-            pauseDialog.Show();
+            GetTree().Paused = newState;
+            if (newState) pauseDialog.Show();
+            else pauseDialog.Hide();
         }
 
-        private void OnResume()
-        {
-            GetTree().Paused = false;
-            pauseDialog.Hide();
-        }
+        private void OnPauseClicked()
+            => EmitSignal("SetPause", true);
 
-        private void OnQuit()
+        private void OnResumeClicked()
+            => EmitSignal("SetPause", false);
+
+        private void OnQuitClicked()
         {
-            GetTree().Paused = false;
-            pauseDialog.Hide();
+            EmitSignal("SetPause", false);
             GetTree().ChangeScene("Main/SelectLevel.tscn");
         }
 
@@ -38,8 +42,8 @@ namespace GravityPlatform.UI
         {
             if (escape.ValidatePress(evt))
             {
-                if (GetTree().Paused) OnResume();
-                else OnPause();
+                if (GetTree().Paused) OnResumeClicked();
+                else OnPauseClicked();
             }
             base._Input(evt);
         }

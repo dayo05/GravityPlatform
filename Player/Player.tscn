@@ -87,6 +87,7 @@ shape = SubResource( 5 )
 [connection signal="GameOver" from="." to="." method="SGameOver"]
 [connection signal="IZone" from="." to="." method="SIZone"]
 [connection signal="OZone" from="." to="." method="SOZone"]
+[connection signal="OnClear" from="." to="." method="SOnClear"]
 [connection signal="SavePoint" from="." to="." method="SSavePoint"]
 [connection signal="body_entered" from="LWallArea" to="LWallArea" method="OnBodyEnter"]
 [connection signal="body_exited" from="LWallArea" to="LWallArea" method="OnBodyExit"]
