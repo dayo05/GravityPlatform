@@ -48,3 +48,5 @@ margin_right = 293.0
 margin_bottom = 229.0
 custom_fonts/font = SubResource( 4 )
 text = "Resume"
+
+[connection signal="SetPause" from="." to="." method="SSetPause"]

@@ -12,8 +12,7 @@ namespace GravityPlatform.Portal
         void OnPlayerDetected(Node2D node)
         {
             if (!(node is Player.Player)) return;
-            GetTree().ChangeScene("Main/SelectLevel.tscn");
-            InternalData.isTutorialCleared = true;
+            node.EmitSignal("OnClear");
         }
     }
 }

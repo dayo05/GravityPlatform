@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using Godot;
+using GravityPlatform.UI;
 using GravityPlatform.Util;
 using GravityPlatform.Zone;
 
@@ -23,6 +25,11 @@ namespace GravityPlatform.Player
         private InputHandler dash = new InputHandler("dash");
         private InputHandler grab = new InputHandler("grab");
         private InputHandler gravity_1 = new InputHandler("gravity_1");
+
+        private uint deathCounter = 0;
+        private Stopwatch playTime = new Stopwatch();
+
+        private HUD HUD;
         
         public override void _Ready()
         {
@@ -31,10 +38,14 @@ namespace GravityPlatform.Player
             rWall = GetNode<WallDetector>("RWallArea");
             celling = GetNode<WallDetector>("CellingArea");
             floor = GetNode<WallDetector>("FloorArea");
+            HUD = GetParent().GetNode<HUD>("CanvasLayer/Control");
+
+            HUD.Connect("SetPause", this, nameof(SSetPause));
 
             CancelDash();
 
             respawnPoint = Position;
+            playTime.Start();
         }
 
         private int dashCount = 1;
@@ -69,6 +80,9 @@ namespace GravityPlatform.Player
         [Signal]
         delegate void OZone(string tag);
 
+        [Signal]
+        delegate void OnClear();
+
         private void SAddDash()
         {
             dashCount++;
@@ -77,6 +91,22 @@ namespace GravityPlatform.Player
         private void SGameOver()
         {
             taskGameOver = true;
+        }
+
+        private void GameOverPhysics()
+        {
+            Position = respawnPoint;
+            GravityBias = respawnGravity;
+            LinearVelocity = Vector2.Zero;
+            lfloorTick.Disable();
+            wjumpTick.Disable();
+            jumpTask.Disable();
+            CancelDash();
+            ResetDash();
+
+            deathCounter++;
+                
+            ptick.Reset();
         }
 
         private void SSavePoint(Vector2 point)
@@ -104,18 +134,18 @@ namespace GravityPlatform.Player
                     break;
             }
         }
-    }
-    
-    public static class Extensions {
-        public static void Disable(this ref ulong? a)
+
+        private void SOnClear()
         {
-            unsafe
-            {
-                fixed (ulong?* k = &a)
-                {
-                    *k = null;
-                }
-            }
+            GetTree().ChangeScene("Main/SelectLevel.tscn");
+        }
+
+        private void SSetPause(bool newState)
+        {
+            if (newState)
+                playTime.Stop();
+            else playTime.Start();
+            GD.Print(playTime.ElapsedMilliseconds);
         }
     }
 }
