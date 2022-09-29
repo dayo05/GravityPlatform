@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using GravityPlatform.Util;
 using GravityPlatform.Zone;
@@ -30,7 +31,9 @@ namespace GravityPlatform.Player
             rWall = GetNode<WallDetector>("RWallArea");
             celling = GetNode<WallDetector>("CellingArea");
             floor = GetNode<WallDetector>("FloorArea");
-            
+
+            CancelDash();
+
             respawnPoint = Position;
         }
 
@@ -99,6 +102,19 @@ namespace GravityPlatform.Player
                 case nameof(FixedGravityZone):
                     fixedGravityZoneStack--;
                     break;
+            }
+        }
+    }
+    
+    public static class Extensions {
+        public static void Disable(this ref ulong? a)
+        {
+            unsafe
+            {
+                fixed (ulong?* k = &a)
+                {
+                    *k = null;
+                }
             }
         }
     }

@@ -71,6 +71,10 @@ escape={
  ]
 }
 
+[mono]
+
+project/assembly_name="Gravity Platform"
+
 [physics]
 
 common/enable_pause_aware_picking=true

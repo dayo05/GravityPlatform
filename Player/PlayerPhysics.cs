@@ -29,18 +29,17 @@ namespace GravityPlatform.Player
                 
                 Position = respawnPoint;
                 GravityBias = respawnGravity;
-                dashDeltaTime = 10;
+                CancelDash();
                 LinearVelocity = Vector2.Zero;
-                lfloorTick = null;
-                wjumpTick = null;
-                jumpTask = null;
+                lfloorTick.Disable();
+                wjumpTick.Disable();
+                jumpTask.Disable();
+                ResetDash();
                 
                 ptick.Reset();
                 return;
             }
             ptick.NextTick();
-            var t = false;
-            dashDeltaTime += delta;
 
             if (dashDeltaTime > 0.5f)
             {
@@ -50,6 +49,8 @@ namespace GravityPlatform.Player
                 if (CheckOnFloor())
                 {
                     lfloorTick = ptick.Tick;
+                    
+                    var t = false;
                     if (right.IsPressed && (t = true))
                         LinearVelocity = new Vector2(MovingBias, LinearVelocity.y);
                     if (left.IsPressed && (t = true))
@@ -60,9 +61,10 @@ namespace GravityPlatform.Player
                     if (jump.IsJustPressed || ptick.Before(jumpTask, 10))
                     {
                         ApplyJump();
-                        lfloorTick = null;
-                        jumpTask = null;
+                        lfloorTick.Disable();
+                        jumpTask.Disable();
                     }
+                    else if(dash.IsJustPressed && Dash()) { /* Dash */ }
                 }
                 else if (ptick.Before(lfloorTick, 10) && jump.IsJustPressed)
                     ApplyJump();
@@ -74,16 +76,17 @@ namespace GravityPlatform.Player
                         ApplyJump();
                         ResetDash();
                         wjumpTick = ptick.Tick;
-                        jumpTask = null;
+                        jumpTask.Disable();
                     }
                     else if (grab.IsPressed && ptick.After(wjumpTick, 10))
                     {
                         ResetDash();
                         LinearVelocity = Vector2.Zero;
-                        wjumpTick = null;
+                        wjumpTick.Disable();
                     }
                     else ApplyGravity(delta);
                 }
+                #region State: On air
                 else if (dash.IsJustPressed && Dash())
                 { /* Dash! */ }
                 else if (jump.IsJustPressed)
@@ -92,18 +95,22 @@ namespace GravityPlatform.Player
                     ApplyGravity(delta);
                 }
                 else ApplyGravity(delta);
+                #endregion
 
                 LinearVelocity = MoveAndSlide(LinearVelocity, Vector2.Up);
 
                 if (LinearVelocity.x != 0 && dashDeltaTime != 0)
                     sprite.FlipH = LinearVelocity.x < 0;
             }
+            #region State: Using dash
             else
             {
+                dashDeltaTime += delta;
                 if (dash.IsJustPressed)
                     Dash();
                 MoveAndSlide(dashDirection.Normalized() * 8000 * delta * (2.5f + (0.6f - dashDeltaTime)), Vector2.Up);
             }
+            #endregion
         }
         
         private bool IsReversedGravity() => GravityBias < 0;
@@ -111,6 +118,7 @@ namespace GravityPlatform.Player
         private bool CheckOnWall() => lWall.IsWallDetected || rWall.IsWallDetected;
         private void ApplyJump(float bias = 1.0f) => LinearVelocity.y = 500 * bias * (IsReversedGravity() ? 1 : -1);
         private void ApplyGravity(float delta) => LinearVelocity += Vector2.Down * 950 * delta * GravityBias;
+        private void CancelDash() => dashDeltaTime = 10;
         
         private bool Dash()
         {

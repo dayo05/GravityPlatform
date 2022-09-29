@@ -3,5 +3,6 @@
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>GravityPlatform</RootNamespace>
     <LangVersion>8.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 </Project>
