@@ -1,7 +1,4 @@
-using System;
-using Godot;
-
-namespace GravityPlatform.Tutorial
+namespace GravityPlatform.Scenes.Maps.Tutorial
 {
     public class TutorialPlayer : Player.Player
     {

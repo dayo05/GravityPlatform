@@ -35,7 +35,7 @@ namespace GravityPlatform.UI
         private void OnQuitClicked()
         {
             EmitSignal("SetPause", false);
-            GetTree().ChangeScene("Main/SelectLevel.tscn");
+            GetTree().ChangeScene("Scenes/SelectLevel.tscn");
         }
 
         public override void _Input(InputEvent evt)

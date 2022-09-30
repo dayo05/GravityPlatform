@@ -1,6 +1,6 @@
 using Godot;
 
-namespace GravityPlatform.Main
+namespace GravityPlatform.Scenes
 {
     public class LevelSelect : Node
     {
@@ -12,7 +12,12 @@ namespace GravityPlatform.Main
 
         void STutorialButton()
         {
-            GetTree().ChangeScene("Tutorial/Main.tscn");
+            GetTree().ChangeScene("Scenes/Maps/Tutorial/Main.tscn");
+        }
+
+        void SMap1Button()
+        {
+            GetTree().ChangeScene("Scenes/Maps/Map1/M1.tscn");
         }
     }
 }

@@ -17,8 +17,23 @@ namespace GravityPlatform
         public override void _Process(float delta)
         {
             if (isGameOvered) return;
-            Offset = new Vector2((int)(tracker.Position.x + 1000) / 2000 * 2000, (int)(tracker.Position.y + 600) / 1200 * 1200);
+            Offset = new Vector2(CalculateX((int)tracker.Position.x, (int)(1000 * Zoom.x)),
+                CalculateY((int)tracker.Position.y, (int)(600 * Zoom.y)));
             base._Process(delta);
+        }
+
+        private int CalculateY(int value, int size)
+        {
+            value += size / 2;
+            var k = value < 0 ? (value / size - 1) : value / size;
+            return (int)(k * size);
+        }
+
+        private int CalculateX(int value, int size)
+        {
+            value -= size / 2;
+            var k = value < 0 ? (value / size) : value / size + 1;
+            return (int)(k * size);
         }
     }
 }

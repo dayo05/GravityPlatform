@@ -136,7 +136,7 @@ namespace GravityPlatform.Player
 
         private void SOnClear()
         {
-            GetTree().ChangeScene("Main/SelectLevel.tscn");
+            GetTree().ChangeScene("Scenes/SelectLevel.tscn");
         }
 
         private void SSetPause(bool newState)

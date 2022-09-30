@@ -11,7 +11,7 @@ namespace GravityPlatform.Player
         private ulong? lfloorTick;
         private ulong? jumpTask;
         
-        private const int MovingBias = 300;
+        private const int MovingBias = 400;
         private float dashDeltaTime = 10.0f;
         private Vector2 dashDirection;
 
@@ -98,7 +98,7 @@ namespace GravityPlatform.Player
             {
                 dashDeltaTime += delta;
                 if (dash.IsJustPressed && Dash()) { /* Dash! */ }
-                MoveAndSlide(dashDirection.Normalized() * 8000 * delta * (2.5f + (0.6f - dashDeltaTime)), Vector2.Up);
+                MoveAndSlide(dashDirection.Normalized() * 10000 * delta * (2.5f + (0.6f - dashDeltaTime)), Vector2.Up);
             }
             #endregion
         }
