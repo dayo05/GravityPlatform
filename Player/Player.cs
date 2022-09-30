@@ -136,6 +136,8 @@ namespace GravityPlatform.Player
 
         private void SOnClear()
         {
+            playTime.Stop();
+            GD.Print($"Clear time: {playTime.ElapsedMilliseconds}");
             GetTree().ChangeScene("Scenes/SelectLevel.tscn");
         }
 

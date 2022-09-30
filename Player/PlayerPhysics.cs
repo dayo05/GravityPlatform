@@ -11,7 +11,7 @@ namespace GravityPlatform.Player
         private ulong? lfloorTick;
         private ulong? jumpTask;
         
-        private const int MovingBias = 400;
+        private const int MovingBias = 350;
         private float dashDeltaTime = 10.0f;
         private Vector2 dashDirection;
 
